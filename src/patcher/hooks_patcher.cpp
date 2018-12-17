@@ -9,6 +9,25 @@
 #include "utils.h"
 #include "mymemory/memory_mapping.h"
 
+bool wups_using_sockets = false;
+
+DECL(void, socket_lib_init) {
+    if(wups_using_sockets) {
+        DEBUG_FUNCTION_LINE("Application tried to reinitialize sockets. Ignoring...\n");
+    } else {
+        real_socket_lib_init();
+        wups_using_sockets = true;
+    }
+}
+
+DECL(void, socket_lib_finish) {
+    if(wups_using_sockets) {
+        DEBUG_FUNCTION_LINE("Application tried to deinitialize sockets. Ignoring...\n");
+    } else {
+        real_socket_lib_finish();
+    }
+}
+
 DECL(void, __PPCExit, void) {
     // Only continue if we are in the "right" application.
     //if(OSGetTitleID() == gGameTitleID) {
@@ -30,6 +49,8 @@ DECL(uint32_t, ProcUIProcessMessages, uint32_t u) {
         if(gAppStatus == WUPS_APP_STATUS_CLOSED) {
             CallHook(WUPS_LOADER_HOOK_ENDING_APPLICATION);
             DeInit();
+            wups_using_sockets = false;
+            my_socket_lib_finish();
         }
     }
 
@@ -129,7 +150,6 @@ DECL(int32_t, VPADRead, int32_t chan, VPADData *buffer, uint32_t buffer_size, in
     return result;
 }
 
-
 hooks_magic_t method_hooks_hooks[] __attribute__((section(".data"))) = {
     MAKE_MAGIC(__PPCExit,               LIB_CORE_INIT,  STATIC_FUNCTION),
     MAKE_MAGIC(ProcUIProcessMessages,   LIB_PROC_UI,    DYNAMIC_FUNCTION),
@@ -137,6 +157,8 @@ hooks_magic_t method_hooks_hooks[] __attribute__((section(".data"))) = {
     MAKE_MAGIC(GX2SetDRCBuffer,         LIB_GX2,        STATIC_FUNCTION),
     MAKE_MAGIC(GX2WaitForVsync,         LIB_GX2,        STATIC_FUNCTION),
     MAKE_MAGIC(VPADRead,                LIB_VPAD,       STATIC_FUNCTION),
+    MAKE_MAGIC(socket_lib_init,         LIB_NSYSNET,    STATIC_FUNCTION),
+    MAKE_MAGIC(socket_lib_finish,       LIB_NSYSNET,    STATIC_FUNCTION)
 };
 
 
@@ -144,4 +166,3 @@ uint32_t method_hooks_size_hooks __attribute__((section(".data"))) = sizeof(meth
 
 //! buffer to store our instructions needed for our replacements
 volatile uint32_t method_calls_hooks[sizeof(method_hooks_hooks) / sizeof(hooks_magic_t) * FUNCTION_PATCHER_METHOD_STORE_SIZE] __attribute__((section(".data")));
-
