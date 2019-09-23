@@ -14,11 +14,11 @@ The project is still in it's very early days, but it already has basic functions
 - Multiple plugins can override the same system functions.
 - Plugins can register for certain hook (for example whenever an application was started)
 - Plugins inherit the SD/USB access from the loader. All plugins have global SD and USB (FAT32 only) access.
-- Plugins can be configured at run-time. Press L, DPAD down, and minus on the gamepad at the same time to open the configuration menu.
+- Plugins can be configured at run-time. Press L, D-PAD down, and minus on the gamepad at the same time to open the configuration menu.
 
 ## Usage
 
-Use the "Wii U Plugin Loader" to load plugins from the sd card. It is built to be loaded through the homebrew launcher, which can be either loaded with the browser exploit or haxchi.
+Use the "Wii U Plugin Loader" to load plugins from the SD card. It is built to be loaded through the homebrew launcher, which can be either loaded with the browser exploit or haxchi.
 Plugins needs to be placed into the following folder:
 
 ```
@@ -33,7 +33,7 @@ This means it's not possible to combine this with other homebrews (yet).
 Information on how to create plugin can be found in the [wiki](https://maschell.github.io/WiiUPluginSystem/dev_plugin_creation_overview.html).
 
 ## Building
-Make sure the toolchain is uptodate `pacman -Syu devkitPPC devkitARM vim general-tools`
+Make sure the toolchain is up-to-date `pacman -Syu devkitPPC devkitARM vim general-tools`
 
 For building you need: 
 - [libiosuhax](https://github.com/dimok789/libiosuhax) (Build WITHOUT the WUT flag set.)
@@ -64,13 +64,11 @@ docker run -it --rm -v ${PWD}:/project wups-loader-builder make clean
 
 # Load a plugin via network
 
-While the loader is running, it's possible to load a single plugin via [wiiload](http://wiibrew.org/wiki/Wiiload).  
-When using this feature, this and all plugins in `sd:/wiiu/plugins/temp` will be loaded. The plugin will copied to the SDCard, this mean a SDCard is required.
-A windows executable can be found in `tools/wiiload.exe`  
-More information about wiiload and alternatives can be found here: http://wiibrew.org/wiki/Wiiload
+While the loader is running, it's possible to load a single plugin via [`wiiload`](http://wiibrew.org/wiki/Wiiload), which only exists as a `Windows` binary. For a platform-independent solution, [`App Sender`](https://github.com/BullyWiiPlaza/App-Sender/blob/master/App%20Sender.jar?raw=true) can be used. More information about `wiiload` and alternatives can be found [here](http://wiibrew.org/wiki/Wiiload).
+
+When using this feature, the sent plugin will be copied to the SD card and all plugins in `sd:/wiiu/plugins/temp` will be loaded.
 
 # Credits
-Some files are based on brainslug by Chadderz:  
-https://github.com/Chadderz121/brainslug-wii  
-Much stuff also wouldn't be possible without dimok789. He made many great tools and homebrew this stuff in based on (Makefiles, Mocha, homebrew channel, udp logger, dynamic_libs etc.)  
-Also thanks to everyone who made actual exploits.  
+* Some files are based on [`brainslug`](https://github.com/Chadderz121/brainslug-wii ) by Chadderz  
+* Much stuff also wouldn't be possible without dimok789. He made many great tools and homebrew this stuff in based on (Makefiles, Mocha, homebrew channel, udp logger, dynamic_libs etc.)  
+* Also thanks to everyone who made actual exploits.
